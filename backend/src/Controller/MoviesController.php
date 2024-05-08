@@ -13,7 +13,8 @@ class MoviesController extends AbstractController
     public function __construct(
         private MovieRepository $movieRepository,
         private SerializerInterface $serializer
-    ) {}
+    ) {
+    }
 
     #[Route('/movies', methods: ['GET'])]
     public function list(): JsonResponse
