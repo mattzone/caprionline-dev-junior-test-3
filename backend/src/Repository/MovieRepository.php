@@ -45,4 +45,15 @@ class MovieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findByGenre($idGenre)
+    {
+        $qb = $this->createQueryBuilder('movie')
+            ->select('movie')
+            ->join('movie.movieGenres', 'g')
+            ->where('g.genre = :idGenre')
+            ->setParameter('idGenre', $idGenre);
+
+        return $qb->getQuery()->getResult();
+    }
 }

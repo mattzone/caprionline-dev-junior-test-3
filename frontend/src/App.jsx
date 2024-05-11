@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Rating, Spinner } from 'flowbite-react';
+import { FaArrowUpWideShort, FaArrowDownShortWide } from "react-icons/fa6";
+
 
 const App = props => {
-  const [movies, setMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]),
+    [ascRecent, setAscRecent] = useState(true),
+    [ascRating, setAscRating] = useState(true),
+    [genres, setGenres] = useState([]),
+    [loading, setLoading] = useState(true);
 
   const fetchMovies = () => {
     setLoading(true);
@@ -39,17 +43,23 @@ const App = props => {
   const filterByGenre = (e) => {
     let genreId = e.target.value;
 
+    setLoading(true);
+
+    return fetch(`http://localhost:8000/movies/genre/${genreId}`)
+      .then(response => response.json())
+      .then(data => {
+        setMovies(data);
+        setLoading(false);
+      });
   }
 
   return (
     <Layout>
       <Heading />
 
-      <FilterButtons {...{ movies, setMovies, setLoading }} />
-
-
       <GenresSelect {...{ genres, filterByGenre }} />
 
+      <FilterButtons {...{ movies, setMovies, setLoading, ascRecent, setAscRecent, ascRating, setAscRating }} />
 
       <MovieList loading={loading}>
         {movies.map((item, key) => (
@@ -164,8 +174,22 @@ const FilterButtons = props => {
 
     props.setLoading(true);
 
-    if (type == 'btn-recent') array.sort((a, b) => (a.releaseDate < b.releaseDate) ? 1 : -1);
-    else array.sort((a, b) => (a.rating < b.rating) ? 1 : -1);
+    if (type == 'btn-recent') array.sort((a, b) => {
+      let result = (a.releaseDate < b.releaseDate) ? 1 : -1;
+      if (props.ascRecent) result = (a.releaseDate > b.releaseDate) ? 1 : -1;
+
+      props.setAscRecent(!props.ascRecent);
+
+      return result;
+    });
+    else array.sort((a, b) => {
+      let result = (a.rating < b.rating) ? 1 : -1
+      if (props.ascRating) result = (a.rating > b.rating) ? 1 : -1
+
+      props.setAscRating(!props.ascRating);
+
+      return result;
+    });
 
     props.setMovies(array);
     props.setLoading(false);
@@ -174,10 +198,14 @@ const FilterButtons = props => {
   return (
     <div className='mb-10'>
       <p className="font-light text-gray-500 mb-5">
-        Order the collection of movies by rating or data
+        Order the collection of movies by rating or most recent
       </p>
-      <button onClick={filterMovie} id="btn-recent" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5'>Più recenti</button>
-      <button onClick={filterMovie} id="btn-rating" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>Rating</button>
+
+      <div className='flex'>
+        <button onClick={filterMovie} id="btn-recent" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5 flex items-center gap-5'>Most recent {props.ascRecent ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
+        <button onClick={filterMovie} id="btn-rating" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-5'>Rating {props.ascRating ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
+      </div>
+
     </div>
   );
 }
@@ -188,9 +216,10 @@ const GenresSelect = props => {
       <p className="font-light text-gray-500 mb-5">
         Filter the collection of movies by genre
       </p>
-      <select onChange={props.filterByGenre} className="py-3 px-4 pe-9 border-gray-500 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-        {props.genres.map((genre, index) =>
-          <option key={index} value={index}>
+      <select defaultValue="" onChange={props.filterByGenre} className="py-3 px-4 pe-9 border-gray-500 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+        <option value="" disabled>Select your option</option>
+        {props.genres.map((genre) =>
+          <option key={genre.id} value={genre.id}>
             {genre.name}
           </option>
         )}
