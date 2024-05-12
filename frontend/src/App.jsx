@@ -201,9 +201,10 @@ const FilterButtons = props => {
         Order the collection of movies by rating or most recent
       </p>
 
-      <div className='flex'>
-        <button onClick={filterMovie} id="btn-recent" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-5 flex items-center gap-5'>Most recent {props.ascRecent ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
-        <button onClick={filterMovie} id="btn-rating" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-5'>Rating {props.ascRating ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
+
+      <div className="inline-flex rounded-md shadow-sm" role="group">
+        <button type='button' onClick={filterMovie} id="btn-recent" className="rounded-s-lg text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium text-sm px-5 py-2.5 text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 flex items-center gap-5">Most recent {props.ascRecent ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
+        <button type='button' onClick={filterMovie} id="btn-rating" className="rounded-r-lg text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium text-sm px-5 py-2.5 text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 flex items-center gap-5">Rating {props.ascRating ? <FaArrowUpWideShort /> : < FaArrowDownShortWide />}</button>
       </div>
 
     </div>
@@ -216,7 +217,7 @@ const GenresSelect = props => {
       <p className="font-light text-gray-500 mb-5">
         Filter the collection of movies by genre
       </p>
-      <select defaultValue="" onChange={props.filterByGenre} className="py-3 px-4 pe-9 border-gray-500 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+      <select defaultValue="" onChange={props.filterByGenre} className="bg-gray-50 border border-gray-800 focus:border-gray-800 text-gray-900 text-sm rounded-lg focus:ring-4 focus:outline-none focus:ring-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <option value="" disabled>Select your option</option>
         {props.genres.map((genre) =>
           <option key={genre.id} value={genre.id}>
